@@ -96,7 +96,7 @@ class RegistryForm extends Component{
             </Col>
             <Col xs={12} sm={10}>
               <Well bsSize="sm">
-                <p>{this.props.profile.firstName}</p>
+                <p>{this.props.profile[0].firstName}</p>
               </Well>
             </Col>
 
@@ -105,19 +105,19 @@ class RegistryForm extends Component{
             </Col>
             <Col xs={12} sm={10}>
               <Well bsSize="sm">
-                <p>{this.props.profile.lastName}</p>
+                <p>{this.props.profile[0].lastName}</p>
               </Well>
             </Col>
           </Row>
         </Col>
         <Col xs={12}>
           <div className="text-center">
+            <Button type="button" onClick={this.onToggleParticipation}>
+              {this.props.profile[0].isParticipating ? "Leave Lottery" : "Join Lottery"}
+            </Button>
             <a href="/lottery" className="btn btn-primary">
               Go to lottery
             </a>
-            <Button type="button" onClick={this.onToggleParticipation}>
-              {this.props.profile.isParticipating ? "Leave Lottery" : "Join Lottery"}
-            </Button>
           </div>
         </Col>
       </Row>
@@ -158,7 +158,7 @@ class RegistryForm extends Component{
 
 RegistryForm.propTypes = {
   currentUser: PropTypes.object,
-  profile: PropTypes.object,
+  profile: PropTypes.array,
 };
 
 export default createContainer(() => {

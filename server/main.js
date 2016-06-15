@@ -45,16 +45,26 @@ Meteor.methods({
 			if( Roles.userIsInRole(Meteor.user(), ['participant']) ){
 				// Update their profile
 				console.log("Updating participation...");
-				console.log(Profile.find({owner:Meteor.userId()}).isParticipating );
-				Profile.update({
-	        	owner: Meteor.userId()
-	      	},
-		      {
-		        $set:{
-		          isParticipating: !Profile.find({owner:Meteor.userId()}).isParticipating
-		        }
-		      }
-		    );
+				console.log(Profile.find({owner:Meteor.userId()}).fetch()[0].isParticipating );
+
+				Profile.find({owner:Meteor.userId()}).forEach(
+			    function (elem) {
+		        Profile.update(
+	            {
+                _id: elem._id
+	            },
+	            {
+                $set: {
+                   isParticipating: !elem.isParticipating
+                }
+	            }
+		        );
+			    }
+				);
+
+				console.log("After update...");
+				console.log(Profile.find({owner:Meteor.userId()}).fetch()[0].isParticipating );
+
 			}
 		}
 	},

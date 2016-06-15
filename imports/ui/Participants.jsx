@@ -8,12 +8,12 @@ import {Profile} from '../api/profile.js';
 class Participants extends Component{
   renderParticipants() {
     return this.props.participantUsers.map((user) => (
-      <Participant key={user._id} FirstName={user.FirstName} LastName={user.LastName} />
+      <Participant key={user._id} FirstName={user.firstName} LastName={user.lastName} />
     ));
   }
 
   setTableContent(){
-    if (this.props.users.length > 0){
+    if (this.props.participantUsers.length > 0){
       return (
         <table className="table table-striped">
           <thead>
@@ -34,18 +34,18 @@ class Participants extends Component{
 
 	render(){
 		return (
-              <Col xs={12}>
-                <div className="panel md-shadow-1">
-                  <div className="content">
-                    <strong>
-                      Participants ({this.props.participantUsers.length}):
-                    </strong>
-                    <div className="table-responsive">
-                      {this.setTableContent()}
-                    </div>
-                  </div>
-                </div>
-              </Col>
+      <Col xs={12}>
+        <div className="panel md-shadow-1">
+          <div className="content">
+            <strong>
+              Participants ({this.props.participantUsers.length}):
+            </strong>
+            <div className="table-responsive">
+              {this.setTableContent()}
+            </div>
+          </div>
+        </div>
+      </Col>
 		);
 	}
 }
@@ -57,10 +57,8 @@ Participants.propTypes = {
 
 export default createContainer(() => {
   Meteor.subscribe('allUserProfiles');
-  console.log('qweqw')
-  console.log(Profile.find().fetch());
   return {
-      participantUsers: Profile.find(),
+      participantUsers: Profile.find().fetch(),
       currentUser: Meteor.user(),
   };
 }, Participants);
