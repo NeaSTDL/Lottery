@@ -13,13 +13,13 @@ class RegistryForm extends Component{
   onProfileFormSubmit(event){
     let profile = {};
     event.preventDefault();
-    
+
     profile = {
       firstName: this.refs.RegistryForm.elements.frmFirstName.value,
       lastName: this.refs.RegistryForm.elements.frmLastName.value,
       isInit: true,
     };
-    
+
     Meteor.call('createUserProfile', profile);
   }
 
@@ -54,7 +54,7 @@ class RegistryForm extends Component{
                 <FormGroup controlId="frmLastName">
                   <ControlLabel>Last Name</ControlLabel>
                   <FormControl type="text" placeholder="Enter last name"/>
-                </FormGroup>    
+                </FormGroup>
               </Col>
             </Row>
             <Button type="submit">
@@ -78,7 +78,7 @@ class RegistryForm extends Component{
         <Col xs={12}>
           <Row>
             <Col xs={12}>
-              <p>This is your profile info:</p>    
+              <p>This is your profile info:</p>
             </Col>
           </Row>
           <Row>
@@ -134,14 +134,14 @@ class RegistryForm extends Component{
             </strong>
           </Well>
         </Col>
-      </Row>      
+      </Row>
     );
   }
 
   decideReturn(){
     // If user exists
     if(this.props.currentUser){
-      if(this.props.profile){
+      if(this.props.profile.length > 0){
         return this.renderRegistryInfo();
       } else {
         return this.renderBlankForm();
@@ -152,7 +152,7 @@ class RegistryForm extends Component{
   }
 
 	render(){
-    return this.decideReturn(); 
+    return this.decideReturn();
 	}
 }
 
@@ -162,15 +162,14 @@ RegistryForm.propTypes = {
 };
 
 export default createContainer(() => {
-  Meteor.subscribe("userProfile");
-
+  Meteor.subscribe("userProfile", Meteor.userId());
   console.log('User');
   console.log(Meteor.users.find({_id:Meteor.userId()}).fetch());
   console.log('Profile');
-  console.log(Profile.find({owner:Meteor.userId()}).fetch());
+  console.log(Profile.find().fetch());
   console.log('Calling participants...')
   console.log(Meteor.call('getParticipants'));
-  return { 
+  return {
     currentUser: Meteor.user(),
     profile: Profile.find({owner:Meteor.userId()}).fetch(),
   };
