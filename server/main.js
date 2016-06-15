@@ -10,7 +10,7 @@ Meteor.startup(function(){
 	Lottery.insert({isCurrentlyPlaying : false});
 });
 
-// If this 
+// If this
 if (Meteor.isServer) {
   // This code only runs on the server
   Meteor.publish('participants', function tasksPublication() {
@@ -31,9 +31,9 @@ Meteor.methods({
 					owner: Meteor.user()._id,
 					firstName : userData.firstName,
 					lastName : userData.lastName,
-          isParticipating: false,
-          isWinner: false,
-		    });
+				           isParticipating: false,
+				           isWinner: false,
+	    			});
 			}
 		}
 	},
@@ -48,10 +48,10 @@ Meteor.methods({
 				console.log(Profile.find({owner:Meteor.userId()}).isParticipating );
 				Profile.update({
 	        	owner: Meteor.userId()
-	      	}, 
+	      	},
 		      {
 		        $set:{
-		          isParticipating: !Profile.find({owner:Meteor.userId()}).isParticipating 
+		          isParticipating: !Profile.find({owner:Meteor.userId()}).isParticipating
 		        }
 		      }
 		    );
@@ -61,11 +61,15 @@ Meteor.methods({
 	// Get Participants
 	getParticipants: function(){
 		// If user is logged in...
+		console.log('1');
 		if( Meteor.user() ){
 			// And is in role 'participant'...
+			console.log('2');
 			if( Roles.userIsInRole(Meteor.user(), ['participant']) ){
+				console.log('3');
 				// Return participant users
-				return Meteor.users.find({'lottery.isParticipating' : true}).fetch();
+				console.log(Profile.find({'isParticipating' : true}).fetch());
+				return Profile.find({'isParticipating' : true}).fetch();
 			}
 		}
 	},
@@ -82,8 +86,8 @@ Meteor.methods({
 
 				// Get participants with profile
 				// Select 5 random participants
-				// Add them to the winners  
-				
+				// Add them to the winners
+
 			}
 		}
 	},
@@ -93,10 +97,10 @@ Meteor.methods({
 		if( Meteor.user() ){
 			// And is in role 'admin'...
 			if( Roles.userIsInRole(Meteor.user(), ['admin']) ){
-				// Reset participant property   
-				
+				// Reset participant property
+
 			}
-		} 
+		}
 	},
 	getCurrentUserInfo: function(){
 		// If user is logged in...
@@ -116,7 +120,7 @@ Meteor.methods({
 
 // Override handler for onCreateUser
 Accounts.onCreateUser(function(options, user) {
-  // Set user role to participant 
+  // Set user role to participant
   user.roles = ['participant'];
   // Set profile of participant
   user.profile = {

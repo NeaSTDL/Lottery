@@ -163,12 +163,6 @@ RegistryForm.propTypes = {
 
 export default createContainer(() => {
   Meteor.subscribe("userProfile", Meteor.userId());
-  console.log('User');
-  console.log(Meteor.users.find({_id:Meteor.userId()}).fetch());
-  console.log('Profile');
-  console.log(Profile.find().fetch());
-  console.log('Calling participants...')
-  console.log(Meteor.call('getParticipants'));
   return {
     currentUser: Meteor.user(),
     profile: Profile.find({owner:Meteor.userId()}).fetch(),

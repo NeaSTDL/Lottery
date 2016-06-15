@@ -3,6 +3,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import Participant from "./Participant.jsx";
+import {Profile} from '../api/profile.js';
 
 class Participants extends Component{
   renderParticipants() {
@@ -14,14 +15,14 @@ class Participants extends Component{
   setTableContent(){
     if (this.props.users.length > 0){
       return (
-        <table className="table table-striped"> 
-          <thead> 
-            <tr> 
-              <th>First Name</th> 
-              <th>Last Name</th>  
-            </tr> 
-          </thead> 
-          <tbody> 
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+            </tr>
+          </thead>
+          <tbody>
             {this.renderParticipants()}
           </tbody>
         </table>);
@@ -33,18 +34,18 @@ class Participants extends Component{
 
 	render(){
 		return (
-      <Col xs={12}>
-        <div className="panel md-shadow-1">
-          <div className="content">
-            <strong>
-              Participants ({this.props.participantUsers.length}):
-            </strong>
-            <div className="table-responsive">
-              {this.setTableContent()}
-            </div>
-          </div>
-        </div>
-      </Col> 
+              <Col xs={12}>
+                <div className="panel md-shadow-1">
+                  <div className="content">
+                    <strong>
+                      Participants ({this.props.participantUsers.length}):
+                    </strong>
+                    <div className="table-responsive">
+                      {this.setTableContent()}
+                    </div>
+                  </div>
+                </div>
+              </Col>
 		);
 	}
 }
@@ -55,10 +56,11 @@ Participants.propTypes = {
 };
 
 export default createContainer(() => {
-  Meteor.call("getParticipants", function(errors, result){
-    return {
-      participantUsers: result,
+  Meteor.subscribe('allUserProfiles');
+  console.log('qweqw')
+  console.log(Profile.find().fetch());
+  return {
+      participantUsers: Profile.find(),
       currentUser: Meteor.user(),
-    };
-  });
+  };
 }, Participants);
