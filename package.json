@@ -2,16 +2,18 @@
   "name": "Lottery",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "start": "meteor run",
+    "build-css": "node-sass --include-path scss client/scss/main.scss client/main.css"
   },
   "dependencies": {
+    "loaders.css": "^0.1.2",
     "meteor-node-stubs": "~0.2.0",
+    "node-sass": "^3.8.0",
     "qrcode.react": "^0.6.1",
     "react": "^15.1.0",
     "react-addons-pure-render-mixin": "^15.1.0",
     "react-bootstrap": "^0.29.4",
     "react-dom": "^15.1.0",
-    "react-loader": "^2.4.0",
     "react-loaders": "^2.1.1",
     "react-qr": "0.0.2",
     "react-router": "^2.4.1",

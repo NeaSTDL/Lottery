@@ -10,7 +10,6 @@ Meteor.startup(function(){
 	Lottery.insert({isCurrentlyPlaying : false});
 });
 
-// If this
 if (Meteor.isServer) {
   // This code only runs on the server
   Meteor.publish('participants', function tasksPublication() {
@@ -44,9 +43,6 @@ Meteor.methods({
 			// And is in role 'participant'...
 			if( Roles.userIsInRole(Meteor.user(), ['participant']) ){
 				// Update their profile
-				console.log("Updating participation...");
-				console.log(Profile.find({owner:Meteor.userId()}).fetch()[0].isParticipating );
-
 				Profile.find({owner:Meteor.userId()}).forEach(
 			    function (elem) {
 		        Profile.update(
@@ -61,43 +57,17 @@ Meteor.methods({
 		        );
 			    }
 				);
-
-				console.log("After update...");
-				console.log(Profile.find({owner:Meteor.userId()}).fetch()[0].isParticipating );
-
 			}
 		}
 	},
 	// Get Participants
 	getParticipants: function(){
 		// If user is logged in...
-		console.log('1');
 		if( Meteor.user() ){
 			// And is in role 'participant'...
-			console.log('2');
 			if( Roles.userIsInRole(Meteor.user(), ['participant']) ){
-				console.log('3');
 				// Return participant users
-				console.log(Profile.find({'isParticipating' : true}).fetch());
 				return Profile.find({'isParticipating' : true}).fetch();
-			}
-		}
-	},
-
-
-
-	// Begin lottery
-	beginLottery : function(){
-		// If user is logged in...
-		if( Meteor.user() ){
-			// And is in role 'admin'...
-			if( Roles.userIsInRole(Meteor.user(), ['admin']) ){
-				// Set lottery as init
-
-				// Get participants with profile
-				// Select 5 random participants
-				// Add them to the winners
-
 			}
 		}
 	},
@@ -108,7 +78,60 @@ Meteor.methods({
 			// And is in role 'admin'...
 			if( Roles.userIsInRole(Meteor.user(), ['admin']) ){
 				// Reset participant property
+				Profile.update({isParticipating: true}, {$set: {isParticipating: false }});
+			}
+		}
+	},
 
+
+	// Begin lottery
+	beginLottery : function(){
+		let participatingUsers,
+				Winners = [],
+				interval = null,
+				iteration = 0,
+				selectionNumber = 5;
+
+		// If user is logged in...
+		if( Meteor.user() ){
+			// And is in role 'admin'...
+			if( Roles.userIsInRole(Meteor.user(), ['admin']) ){
+				// Set lottery as init
+				Lottery.update({}, {$set:{"isCurrentlyPlaying": true}});
+				// Get participants
+				participatingUsers = Profile.find({isParticipating: true}).fetch();
+				// If there are less participants than the limit of winners... 
+				if( participatingUsers.length < selectionNumber ){
+					// Set all if there are less participants than users to be selected
+					Profile.update({}, {$set:{isWinner: true}});
+					// Set lottery as init
+					Lottery.update({}, {$set:{"isCurrentlyPlaying": false}});
+				} else {
+					// Select then randomly...
+					interval = Meteor.setInterval(function(){
+					  // Get random number
+						let randNum = Math.floor( Math.random() * participatingUsers.length ); 
+						// Get user and set as winner
+						Profile.update({owner: participatingUsers[randNum].owner},{$set:{isWinner: true}});
+						// Erase winner from the list
+						//participatingUsers.splice(randNum, 1);
+						// Print winner info
+						console.log("Winner #" + (iteration + 1) + "!");
+						console.log("    First Name: " +  participatingUsers[randNum].firstName);
+						console.log("    Last Name: " + participatingUsers[randNum].lastName );
+						// Increment iteration
+						iteration++;
+						// Clear interval if enough
+						if(iteration === selectionNumber){
+							Meteor.clearInterval(interval);
+							console.log("Interval cleared...");
+							console.log("Exiting...");
+							// Set lottery as init
+							Lottery.update({}, {$set:{"isCurrentlyPlaying": false}});
+							return;
+						}
+					}, 5000);
+				}
 			}
 		}
 	},
@@ -118,8 +141,6 @@ Meteor.methods({
 			// And is in role 'participant'...
 			if( Roles.userIsInRole(Meteor.user(), ['participant']) ){
 				// Return participant users
-				console.log("Getting user info...");
-				console.log(Meteor.users.find({ _id: Meteor.userId() }, {_id: 1, username: 1, profile: 1}).fetch());
 				return Meteor.users.find({ _id: Meteor.userId() }, {_id: 1, username: 1, profile: 1}).fetch();
 			}
 		}

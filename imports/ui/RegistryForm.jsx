@@ -1,12 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Button, FormGroup, FormControl, ControlLabel, Well } from 'react-bootstrap';
+import Loader from 'react-loaders';
 
 import { Meteor } from 'meteor/meteor';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
-import {Profile} from '../api/profile.js';
+import { Profile } from '../api/profile.js';
+import { Lottery } from '../api/lottery.js';
 
 class RegistryForm extends Component{
 
@@ -112,14 +114,24 @@ class RegistryForm extends Component{
         </Col>
         <Col xs={12}>
           <div className="text-center">
-            <Button type="button" onClick={this.onToggleParticipation}>
+            <Button type="button" onClick={this.onToggleParticipation} className="m-lr-10">
               {this.props.profile[0].isParticipating ? "Leave Lottery" : "Join Lottery"}
             </Button>
-            <a href="/lottery" className="btn btn-primary">
+            <a href="/lottery" className="btn btn-primary m-lr-10">
               Go to lottery
             </a>
           </div>
         </Col>
+        {this.props.profile[0].isParticipating && !this.props.lottery[0].isCurrentlyPlaying ? 
+          <Col xs={12} xsOffset={0} className="m-t-20 m-b-20">
+            <div className="text-center">
+              <strong>Waiting for lottery to initiate...</strong>
+              <div className="center-loader">
+                <Loader type="ball-beat"/>
+              </div>
+            </div>
+          </Col> : ''
+        }
       </Row>
     );
   }
@@ -159,14 +171,15 @@ class RegistryForm extends Component{
 RegistryForm.propTypes = {
   currentUser: PropTypes.object,
   profile: PropTypes.array,
+  lottery: PropTypes.array,
 };
 
 export default createContainer(() => {
   Meteor.subscribe("userProfile", Meteor.userId());
+  Meteor.subscribe('lotteryPublication');
   return {
     currentUser: Meteor.user(),
     profile: Profile.find({owner:Meteor.userId()}).fetch(),
+    lottery: Lottery.find().fetch(),
   };
 }, RegistryForm);
-
-//Roles.userIsInRole(Meteor.user(), ['admin'])

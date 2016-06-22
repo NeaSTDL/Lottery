@@ -4,6 +4,8 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import NavBar from '../ui/NavBar.jsx';
 import RegistryForm from '../ui/RegistryForm.jsx';
 
+import NowPlaying from '../ui/NowPlaying.jsx';
+
 export default class Register extends Component{
 	render(){
 		return (
@@ -14,6 +16,7 @@ export default class Register extends Component{
             <RegistryForm/>
           </div>
         </div>
+        <NowPlaying/>
       </div>
     );
 	}

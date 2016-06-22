@@ -10,7 +10,7 @@ export default class QrCode extends Component{
         <div className="panel md-shadow-1">
           <div className="content text-center">
             <QRCode 
-              value={"http://192.168.2.235:3000/register/"}
+              value={"http://172.29.2.8:3000/register/"}
               size={256}
               bgColor={"#ffffff"}
               fgColor={"#000000"}

@@ -3,6 +3,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import Participant from "./Participant.jsx";
+
 import {Profile} from '../api/profile.js';
 
 class Participants extends Component{
@@ -58,7 +59,7 @@ Participants.propTypes = {
 export default createContainer(() => {
   Meteor.subscribe('allUserProfiles');
   return {
-      participantUsers: Profile.find().fetch(),
+      participantUsers: Profile.find({isParticipating: true}).fetch(),
       currentUser: Meteor.user(),
   };
 }, Participants);
