@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
+    "test": "echo Hello",
     "build-css": "node-sass --include-path scss client/scss/main.scss client/main.css"
   },
   "dependencies": {
